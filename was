@@ -1,0 +1,47 @@
+instanceid=`aws elbv2 describe-target-health --target-group-arn "$stable_tg" --query 'TargetHealthDescriptions[*].Target.Id' --region "ap-south-1" --profile "jenkins-user"`
+
+sudo aws  --region ap-south-1 --profile jenkins-user ec2 describe-instances --filters "Name=instance-state-name,Values=running" "Name=instance-id,Values=$instanceid" --query "Reservations[*].Instances[*].{Name:Tags[?Key=='Name']|[0].Value,PublicIpAddress:PublicIpAddress}" --output text > $WORKSPACE/prod_mumbai_lake_server_ips
+aws ec2 describe-instances --region ap-south-1 --filters Name=instance-state-name,Values=running
+
+aws ec2 describe-network-interfaces --filters Name=addresses.private-ip-address,Values=IPv4 address
+
+
+aws ec2 describe-instances \
+  --query "Reservations[*].Instances[*].PublicIpAddress" \
+  --region ap-south-1\
+  --output=text
+==========
+  aws ec2 describe-instances \
+  --query "Reservations[*].Instances[*].PrivateIpAddress" \
+  --region ap-south-1\
+  --output=text
+
+  =======
+  aws ec2 describe-instances \
+  --filter "Name=instance-state-name,Values=running" \
+  --query "Reservations[*].Instances[*].PublicIpAddress.Value|[0]]" \
+  --profile divum-admin\
+  --region ap-south-1\
+  --output=text
+==========
+aws ec2 describe-instances \
+  --query "Reservations[*].Instances[*].PublicIpAddress" \
+  --output=text
+
+  ===========
+  aws ec2 describe-instances \
+  --filter "Name=instance-state-name,Values=running" \
+  --query "Reservations[*].Instances[*].[PublicIpAddress, Tags[?Key=='Name'].Value|[0]]" \
+  --profile jenkins-user\
+  --region ap-south-1\
+  --output text
+
+ansible-playbook new-connect.yml -i hosts -vv
+  egrep -wi --color 'PrivateIpAddress|Value|prod'sarazin.txt | less
+
+  aws ec2 describe-instances \
+  --filter "Name=instance-state-name,Values=running" \
+  --query "Reservations[*].Instances[*].PrivateIpAddress" \
+  --profile divum-admin\
+  --region ap-south-1\
+  --output=text
